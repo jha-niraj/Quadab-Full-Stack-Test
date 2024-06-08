@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ShoppingCart, Menu } from "lucide-react";
-import UserInfo from "../pages/HomePage";
+import { UserInfo } from "../pages/HomePage";
 
 function Navbar() {	
 	const [ navbarVisible, setNavbarVisible ] = useState(false);
 	const navigate = useNavigate();
-	const token = useContext(UserInfo);
+	const {userAuth } = useContext(UserInfo);
 
 	const handleAuthentication = () => {
 		navigate("/signin");
@@ -23,13 +23,12 @@ function Navbar() {
 					<a className="text-xl font-medium p-1 hover:bg-black hover:rounded-lg transition-all duration-300 hover:text-white cursor-pointer">Contact</a>
 				</div>
 				<div className="flex items-center justify-start gap-3">
-					<div className="flex items-center justify-end">
+					<button onClick={() => navigate("/cart")} className="flex items-center justify-end">
 						<ShoppingCart size={40} />
 						<div className="absolute right-18 top-1 bg-red-500 rounded-full w-5 text-center">0</div>
-					</div>
-					<div></div>
+					</button>
 					{
-						!token ? <div className="bg-black text-white p-2 rounded-full">
+						userAuth ? <div className="bg-black sm:flex items-center justify-center w-10 hidden text-white p-2 rounded-full">
 							<h1 className="text-xl fon-bold">N</h1>
 						</div>
 						:
@@ -52,7 +51,7 @@ function Navbar() {
                         <Link to="/contact">Contact</Link>
                     </li>    
 					{
-						!token ? <div>
+						userAuth ? <div className="hover:bg-black hover:text-white w-10 flex items-center cursor-pointer justify-center hover:scale-105 rounded-full p-2 transition-all duration-500">
 							<h1>N</h1>
 						</div>
 						:
