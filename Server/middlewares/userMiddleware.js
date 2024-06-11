@@ -16,7 +16,7 @@ function userMiddleware(req, res, next) {
 		const webToken = words[1];
 		const decodedvalue = jwt.verify(webToken, jwt_secret);
 		if(decodedvalue.username) {
-			req.username = decodedvalue.username;
+			req.userId = decodedvalue._id;
 			next();
 		} else {
 			console.log("Unauthorized Token!!!");

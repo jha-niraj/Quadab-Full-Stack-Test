@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User } = require("../Schema/userSchema");
+const { User, Product, Cart } = require("../Schema/userSchema");
 const userMiddleware = require("../middlewares/userMiddleware");
 const router = Router();
 const { credentaialsZodSignUpSchema, credentaialsZodSignInSchema } = require("../Validator");
@@ -68,15 +68,87 @@ router.post('/login', async (req, res) => {
 })
 
 // Routes to get all the products and a product with the specific id:
-// router.get("/products", async (req, res) => {
-// 	try {
-		
-// 	} catch(err) {
+router.get("/products", userMiddleware, async (req, res) => {
+	try {
+		const allProducts = await Product.find();
+		if(!allProducts) {
+			return res.status(501).json({
+				msg: "Cannot retrieve the products at the moment"
+			})
+		} else {
+			return res.status(200).json({
+				allProducts
+			})
+		}
+	} catch(err) {
+		return res.status(501).json({
+			msg: err
+		})
+	}
+})
+router.get("/products/:id", userMiddleware, async (req, res) => {
+	const productId = req.params.id;
 
-// 	}
-// })
-// router.get("/products/:id", async (req, res) => {
+	try {
+		const product = await Product.findOne({ _id: productId });
+		if(!product) {
+			return res.status(501).json({
+				msg: "Cannot fetched the particular product"
+			})
+		} else {
+			return res.status(200).json({
+				product
+			})
+		}
+	} catch(err) {
+		return res.status(501).json({
+			msg: err
+		})
+	}
+})
 
-// })
+router.get("/cart", userMiddleware, async (req, res) => {
+	const userId = req.userId;
+
+	try {
+		const userCartProducts = await Cart.find({ userId })
+		if(!userCartProducts) {
+			return res.status(501).json({
+				msg: "Cannot retreive the user's cart products"
+			})
+		} else {
+			return res.status(200).json({
+				userCartProducts
+			})
+		}
+	} catch(err) {	
+		return res.status(501).json({
+			msg: err
+		})
+	}
+})
+router.post("/cart", userMiddleware, async (req, res) => {
+	const userId = req.userId;
+
+	try {
+		const userCartProducts = await Cart.find({ userId })
+		if(!userCartProducts) {
+			return res.status(501).json({
+				msg: "Cannot retreive the user's cart products"
+			})
+		} else {
+			return res.status(200).json({
+				userCartProducts
+			})
+		}
+	} catch(err) {	
+		return res.status(501).json({
+			msg: err
+		})
+	}
+})
+router.delete("/cart/:id", userMiddleware, async (req, res) => {
+
+})
 
 module.exports = router;

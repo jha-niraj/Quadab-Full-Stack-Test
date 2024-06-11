@@ -11,7 +11,15 @@ const credentaialsZodSignInSchema = zod.object({
 	password: zod.string()
 })
 
+const productCredentialsValidator = zod.object({
+	image: zod.string(),
+	title: zod.string(),
+	description: zod.string(),
+	price: zod.number()
+})
+
 module.exports = {
 	credentaialsZodSignUpSchema,
-	credentaialsZodSignInSchema
+	credentaialsZodSignInSchema,
+	productCredentialsValidator
 };
