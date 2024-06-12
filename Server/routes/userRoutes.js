@@ -48,6 +48,9 @@ router.post('/login', async (req, res) => {
 			if(user) {
 				const token = jwt.sign({username} , jwt_secret);
 				res.json({
+					userId: user._id,
+					fullname: user.fullname,
+					email: user.username,
 					token: token
 				})
 			} else {
@@ -111,15 +114,22 @@ router.get("/cart", userMiddleware, async (req, res) => {
 	const userId = req.userId;
 
 	try {
-		const userCartProducts = await Cart.find({ userId })
-		if(!userCartProducts) {
+		const user = await User.findOne({ userId })
+		if(!user) {
 			return res.status(501).json({
-				msg: "Cannot retreive the user's cart products"
+				msg: "Cannot find the user!!!"
 			})
 		} else {
-			return res.status(200).json({
-				userCartProducts
-			})
+			const userProducts = user.cart;
+			if(userProducts.length > 0) {
+				return res.status(200).json({
+					userProducts
+				})
+			} else {
+				return res.status(200).json({
+					msg: "No products in the User's cart"
+				})
+			}
 		}
 	} catch(err) {	
 		return res.status(501).json({
@@ -128,19 +138,35 @@ router.get("/cart", userMiddleware, async (req, res) => {
 	}
 })
 router.post("/cart", userMiddleware, async (req, res) => {
-	const userId = req.userId;
+	const { userId, productId } = req.body;
 
 	try {
-		const userCartProducts = await Cart.find({ userId })
-		if(!userCartProducts) {
-			return res.status(501).json({
-				msg: "Cannot retreive the user's cart products"
-			})
-		} else {
-			return res.status(200).json({
-				userCartProducts
-			})
-		}
+		const user = await User.findById(userId);
+        const product = await Product.findById(productId);
+
+        if (!user.cart) {
+            user.cart = [
+                {
+                    productId: product._id,
+                    quantity: 1
+                }
+            ];
+        } else {
+            let existingProduct = user.cart.find((productInCart) => productInCart.productId.equals(product._id));
+            if (!existingProduct) {
+                user.cart.push({
+                    productId: product._id,
+                    quantity: 1
+                });
+            } else {
+                existingProduct.quantity++;
+            }
+        }
+
+        await user.save();
+        return res.status(200).json({
+            msg: "Pushed the product to the cart"
+        })
 	} catch(err) {	
 		return res.status(501).json({
 			msg: err

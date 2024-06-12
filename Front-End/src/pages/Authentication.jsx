@@ -32,7 +32,7 @@ const userAuthentication = ({ type }) => {
                 password
             })
             toast.success("Login Successful")
-            localStorage.setItem("token", JSON.stringify(response.data.token));
+            localStorage.setItem("userInfo", JSON.stringify(response.data));
             setTimeout(() => {
                 navigate("/");
             }, 2000)

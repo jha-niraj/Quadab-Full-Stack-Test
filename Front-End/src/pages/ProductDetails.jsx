@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 const ProductDetails = () => {
     const { productId } = useParams();
@@ -17,8 +18,6 @@ const ProductDetails = () => {
         }
         fetchedProductDetails();
     }, [productId])  
-
-    console.log(productDetail);
 
     return (
         <div className="flex h-screen items-center justify-center">
