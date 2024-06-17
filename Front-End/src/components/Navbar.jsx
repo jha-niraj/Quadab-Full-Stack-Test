@@ -6,7 +6,7 @@ import { UserInfo } from "../App";
 function Navbar() {	
 	const [ navbarVisible, setNavbarVisible ] = useState(false);
 	const navigate = useNavigate();
-	const { userAuth, userAuth: { token, fullname } } = useContext(UserInfo);
+	const { userAuth, userAuth: { fullname, token } } = useContext(UserInfo);
 
 	const handleAuthentication = () => {
 		navigate("/signin");
@@ -30,7 +30,7 @@ function Navbar() {
 					<div className="flex justify-end items-end w-full">
 						{
 							token ? <div className="bg-black md:flex items-center justify-center hidden text-white p-2 mr-2 rounded-full">
-										<h1 className="text-xl font-bold">Niraj Jha</h1>
+										<h1 className="text-xl font-bold">{userAuth.fullname}</h1>
 									</div>
 							:
 							<button onClick={handleAuthentication} className="bg-black hidden sm:flex text-white rounded-lg p-3 font-bold hover:bg-blue-300 hover:text-black transition-all duration-500">Login</button>

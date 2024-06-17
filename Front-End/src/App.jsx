@@ -8,6 +8,7 @@ import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
+import { lookInSession } from './common/session';
 
 export const UserInfo = createContext({});
 
@@ -15,12 +16,14 @@ function App() {
 	const [ userAuth, setUserAuth ] = useState({});
 
 	useEffect(() => {
-		const userData = JSON.parse(localStorage.getItem("userInfo"));
-		setUserAuth(userData);
+		const userInSession = lookInSession("userInfo");
+		userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({ token: null })
 	}, [])
 
+	console.log(userAuth);
+
     return (
-		<UserInfo.Provider value={{ userAuth }}>
+		<UserInfo.Provider value={{ userAuth, setUserAuth }}>
 			<Routes>
 				<Route path="/" element={<HomePage />} />
 				<Route path="/signup" element={<UserAuthentication type="signup" />} />

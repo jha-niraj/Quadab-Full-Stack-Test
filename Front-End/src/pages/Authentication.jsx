@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 
 import InputBox from "../components/InputBox";
 import Button from "../components/Button";
+import { storeInSession } from "../common/session";
+import { UserInfo } from "../App";
 
 const userAuthentication = ({ type }) => {
     const [fullname, setFullname] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+
+    const { userAuth, setUserAuth } = useContext(UserInfo);
 
     const handleSignup = async () => {
         try {
@@ -32,7 +36,12 @@ const userAuthentication = ({ type }) => {
                 password
             })
             toast.success("Login Successful")
-            localStorage.setItem("userInfo", JSON.stringify(response.data));
+            setUserAuth({
+                ...userAuth,
+                token: response.data.token,
+                fullname: response.data.fullname
+            })
+            storeInSession("userInfo", JSON.stringify(response.data));
             setTimeout(() => {
                 navigate("/");
             }, 2000)

@@ -1,13 +1,12 @@
-const { User } = require("../Schema/userSchema");
 const jwt = require("jsonwebtoken");
 const jwt_secret = process.env.SECRET;
 
 function userMiddleware(req, res, next) {
 	const token = req.headers.authorization;
+	console.log(token)
 
 	if(!token) {
-		console.log("Error!!!");
-		res.json({
+		return res.status(501).json({
 			msg: "Invalid Token"
 		})
 	}
@@ -16,7 +15,6 @@ function userMiddleware(req, res, next) {
 		const webToken = words[1];
 		const decodedvalue = jwt.verify(webToken, jwt_secret);
 		if(decodedvalue.username) {
-			req.userId = decodedvalue._id;
 			next();
 		} else {
 			console.log("Unauthorized Token!!!");
@@ -26,7 +24,7 @@ function userMiddleware(req, res, next) {
 		}
 	} catch(error) {
 		console.log("Error occured!!!");
-		res.json({
+		return res.status(501).json({
 			msg: "Invalid or Token expired!!!"
 		})
 	}

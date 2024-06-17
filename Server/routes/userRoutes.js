@@ -71,7 +71,7 @@ router.post('/login', async (req, res) => {
 })
 
 // Routes to get all the products and a product with the specific id:
-router.get("/products", userMiddleware, async (req, res) => {
+router.get("/products", async (req, res) => {
 	try {
 		const allProducts = await Product.find();
 		if(!allProducts) {
@@ -110,11 +110,11 @@ router.get("/products/:id", userMiddleware, async (req, res) => {
 	}
 })
 
-router.get("/cart", userMiddleware, async (req, res) => {
-	const userId = req.userId;
+router.post("/personalcart", userMiddleware, async (req, res) => {
+	const { userId } = req.body;
 
 	try {
-		const user = await User.findOne({ userId })
+		const user = await User.findOne({ _id: userId })
 		if(!user) {
 			return res.status(501).json({
 				msg: "Cannot find the user!!!"
