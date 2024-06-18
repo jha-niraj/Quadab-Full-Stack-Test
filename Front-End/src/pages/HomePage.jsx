@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Product from "../pages/Product";
 import { UserInfo } from "../App";
+import { Toaster, toast } from "react-hot-toast";
 
 const HomePage = () => {
 	const [products, setProducts] = useState([]);
@@ -29,10 +30,29 @@ const HomePage = () => {
 		fetchProducts();
 	}, []);
 
-	const handleProductAddition = () => { };
+	const handleProductAddition = async (userId, productId) => {
+		console.log(userId);
+		console.log(productId);
+		try {
+			await axios.post("http://localhost:5001/user/cart", {
+				userId,
+				productId
+			}, {
+				headers: {
+					Authorization: `Bearer ${userAuth.token}`
+				}
+			})
+			console.log("Products Added")
+			toast.success("Produccts Added to the Cart");
+		} catch(err) {
+			console.log(err);
+			toast.error("Error Occurred!!!");
+		}
+	};
 
 	return (
 		<div className="w-[99%] flex flex-col gap-5 items-center">
+		<Toaster />
 			<div className="w-full">
 				<Navbar />
 			</div>
@@ -48,7 +68,7 @@ const HomePage = () => {
 									image={product.image}
 									name={product.title}
 									price={product.price}
-									onClick={handleProductAddition}
+									onClick={() => handleProductAddition(userAuth.userId, product._id)}
 								/>
 							);
 						})}

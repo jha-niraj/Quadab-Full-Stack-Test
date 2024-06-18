@@ -174,7 +174,7 @@ router.post("/cart", userMiddleware, async (req, res) => {
 	}
 })
 router.delete("/cart/:id", userMiddleware, async (req, res) => {
-
+	
 })
 
 module.exports = router;

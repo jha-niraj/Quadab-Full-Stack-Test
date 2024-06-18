@@ -1,10 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { UserInfo } from "../App";
 import axios from "axios";
+import { PriceContext } from "../pages/Cart";
 
 const CartProductDetails = ({ productId, quantity }) => {
     const [productDetail, setProductDetail] = useState([]);
     const { userAuth, userAuth: { token } } = useContext(UserInfo);
+
+    const { price, setPrice } = useContext(PriceContext)
 
     console.log(token);
 
@@ -17,6 +20,7 @@ const CartProductDetails = ({ productId, quantity }) => {
                     }
                 })
                 setProductDetail(response.data.product);
+                setPrice()
             } catch(err) {
                 console.log("Error: " + err);
             }
